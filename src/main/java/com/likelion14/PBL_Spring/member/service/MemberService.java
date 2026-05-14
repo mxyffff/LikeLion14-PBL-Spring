@@ -99,6 +99,7 @@ public class MemberService {
         return repository.findByName(name);
     }
 
+    // 전체 Member 조회
     public List<Role> getAllMembers() {
         return repository.findAll();
     }
