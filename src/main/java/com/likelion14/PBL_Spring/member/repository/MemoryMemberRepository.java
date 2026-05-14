@@ -42,4 +42,19 @@ public class MemoryMemberRepository implements MemberRepository {
         }
         return false;
     }
+
+    @Override
+    public void updateByName(String name, Role member) {
+        for (int i = 0; i < members.size(); i++) {
+            if (members.get(i).getName().equals(name)) {
+                members.set(i, member);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public boolean deleteByName(String name) {
+       return members.removeIf(m -> m.getName().equals(name));
+    }
 }

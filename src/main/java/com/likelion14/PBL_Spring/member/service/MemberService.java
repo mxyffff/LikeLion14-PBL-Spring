@@ -3,11 +3,18 @@ package com.likelion14.PBL_Spring.member.service;
 // 멤버 관련 비즈니스 로직을 처리하는 역할
 
 
+import com.likelion14.PBL_Spring.member.domian.role.Lion;
 import com.likelion14.PBL_Spring.member.domian.role.Role;
+import com.likelion14.PBL_Spring.member.domian.role.Staff;
+import com.likelion14.PBL_Spring.member.dto.LionCreateRequest;
+import com.likelion14.PBL_Spring.member.dto.LionUpdateRequest;
+import com.likelion14.PBL_Spring.member.dto.StaffCreateRequest;
+import com.likelion14.PBL_Spring.member.dto.StaffUpdateRequest;
 import com.likelion14.PBL_Spring.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // [개선됨] 의존성 주입(DI) 적용
@@ -25,12 +32,67 @@ public class MemberService {
         this.repository = repository;
     }
 
-    public boolean register(Role member) {
-        if (repository.existsByName(member.getName())) {
-            return false;
+    // Lion 등록
+    public Role createLion(LionCreateRequest request) {
+        Lion lion = new Lion(
+                request.getName(), request.getMajor(), request.getGeneration(),
+                request.getPart(), request.getStudentId()
+        );
+
+        if (repository.existsByName(lion.getName())) {
+            return null;
         }
-        repository.save(member);
-        return true;
+        repository.save(lion);
+        return lion;
+    }
+
+    // Staff 등록
+    public Role createStaff(StaffCreateRequest request) {
+        Staff staff = new Staff(
+                request.getName(), request.getMajor(), request.getGeneration(),
+                request.getPart(), request.getPosition()
+        );
+
+        if (repository.existsByName(staff.getName())) {
+            return null;
+        }
+        repository.save(staff);
+        return staff;
+    }
+
+    // Lion 수정
+    public Role updateLion(String name, LionUpdateRequest request) {
+        if (repository.findByName(name) == null) {
+            return null;
+        }
+
+        Lion updated = new Lion(
+                name, request.getMajor(), request.getGeneration(),
+                request.getPart(), request.getStudentId()
+        );
+
+        repository.updateByName(name, updated);
+        return updated;
+    }
+
+    // Staff 수정
+    public Role updateStaff(String name, StaffUpdateRequest request) {
+        if (repository.findByName(name) == null) {
+            return null;
+        }
+
+        Staff updated = new Staff(
+                name, request.getMajor(), request.getGeneration(),
+                request.getPart(), request.getPosition()
+        );
+
+        repository.updateByName(name, updated);
+        return updated;
+    }
+
+    // Member 삭제
+    public boolean deleteMember(String name) {
+        return repository.deleteByName(name);
     }
 
     public Role searchByName(String name) {
