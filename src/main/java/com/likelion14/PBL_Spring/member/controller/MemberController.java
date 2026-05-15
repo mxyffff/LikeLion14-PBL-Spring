@@ -1,6 +1,6 @@
 package com.likelion14.PBL_Spring.member.controller;
 
-import com.likelion14.PBL_Spring.member.domian.Member;
+import com.likelion14.PBL_Spring.member.domain.Member;
 import com.likelion14.PBL_Spring.member.dto.*;
 import com.likelion14.PBL_Spring.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;

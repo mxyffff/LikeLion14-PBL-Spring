@@ -1,7 +1,6 @@
 package com.likelion14.PBL_Spring.member.dto;
 
-import com.likelion14.PBL_Spring.member.domian.Member;
-import com.likelion14.PBL_Spring.member.domian.RoleType;
+import com.likelion14.PBL_Spring.member.domain.Member;
 
 public class MemberResponse {
     private Long id;
@@ -17,6 +16,7 @@ public class MemberResponse {
     public static MemberResponse from(Member member) {
         MemberResponse response = new MemberResponse();
 
+        response.id = member.getId();
         response.name = member.getName();
         response.major = member.getMajor();
         response.generation = member.getGeneration();

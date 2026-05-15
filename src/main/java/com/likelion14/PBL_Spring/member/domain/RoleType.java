@@ -1,4 +1,4 @@
-package com.likelion14.PBL_Spring.member.domian;
+package com.likelion14.PBL_Spring.member.domain;
 
 public enum RoleType {
     LION("아기사자"),

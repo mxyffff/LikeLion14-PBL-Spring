@@ -1,7 +1,7 @@
 package com.likelion14.PBL_Spring.member.service;
 
-import com.likelion14.PBL_Spring.member.domian.Member;
-import com.likelion14.PBL_Spring.member.domian.RoleType;
+import com.likelion14.PBL_Spring.member.domain.Member;
+import com.likelion14.PBL_Spring.member.domain.RoleType;
 import com.likelion14.PBL_Spring.member.dto.LionCreateRequest;
 import com.likelion14.PBL_Spring.member.dto.LionUpdateRequest;
 import com.likelion14.PBL_Spring.member.dto.StaffCreateRequest;
