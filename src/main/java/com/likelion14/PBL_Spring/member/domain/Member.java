@@ -1,8 +1,12 @@
 package com.likelion14.PBL_Spring.member.domain;
 
+import com.likelion14.PBL_Spring.assignment.domain.Assignment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,6 +26,9 @@ public class Member {
 
     private String studentId;
     private String position;
+
+    @OneToMany(mappedBy = "member") // 이 관계의 외래키는 Assignment의 member 필드가 관리한다는 뜻
+    private List<Assignment> assignments = new ArrayList<>();
 
     public Member(String name, String major, int generation, String part,
                   RoleType roleType, String studentId, String position) {
