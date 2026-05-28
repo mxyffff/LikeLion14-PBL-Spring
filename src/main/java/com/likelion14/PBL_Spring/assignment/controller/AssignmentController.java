@@ -22,25 +22,33 @@ public class AssignmentController {
     // 과제 등록
     @PostMapping("/members/{memberId}/assignments")
     public ResponseEntity<AssignmentResponse> create(@PathVariable Long memberId, @RequestBody AssignmentCreateRequest request) {
-        Assignment assignment = assignmentService.create(memberId, request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(AssignmentResponse.from(assignmentService.create(memberId, request)));
+    }
 
-        if (assignment == null) {
-            return ResponseEntity.notFound().build();
-        }
+    // 전체 과제 조회
+    @GetMapping("/assignments")
+    public ResponseEntity<List<AssignmentResponse>> getAllAssignments() {
+        List<AssignmentResponse> responses = assignmentService.findAll().stream()
+                .map(AssignmentResponse::from)
+                .toList();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(AssignmentResponse.from(assignment));
+        return ResponseEntity.ok(responses);
+    }
+
+    // 과제 제목 검색
+    @GetMapping("/assignments/search")
+    public ResponseEntity<List<AssignmentResponse>> searchByTitle(@RequestParam String keyword) {
+        List<AssignmentResponse> responses = assignmentService.searchByTitle(keyword).stream()
+                .map(AssignmentResponse::from).toList();
+
+        return ResponseEntity.ok(responses);
     }
 
     // 과제 단건 조회
     @GetMapping("/assignments/{id}")
     public ResponseEntity<AssignmentResponse> findById(@PathVariable Long id) {
-        Assignment assignment = assignmentService.findById(id);
-
-        if (assignment == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().body(AssignmentResponse.from(assignment));
+        return ResponseEntity.ok().body(AssignmentResponse.from(assignmentService.findById(id)));
     }
 
     // 멤버별 과제 목록 조회
@@ -55,23 +63,13 @@ public class AssignmentController {
     // 과제 수정
     @PutMapping("/assignments/{id}")
     public ResponseEntity<AssignmentResponse> update(@PathVariable Long id, @RequestBody AssignmentUpdateRequest request) {
-        Assignment assignment = assignmentService.update(id, request);
-
-        if (assignment == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().body(AssignmentResponse.from(assignment));
+        return ResponseEntity.ok().body(AssignmentResponse.from(assignmentService.update(id, request)));
     }
 
     // 과제 삭제
     @DeleteMapping("/assignments/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        boolean success = assignmentService.delete(id);
-
-        if (!success) {
-            return ResponseEntity.notFound().build();
-        }
+        assignmentService.delete(id);
 
         return ResponseEntity.noContent().build();
     }

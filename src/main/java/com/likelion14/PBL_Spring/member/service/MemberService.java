@@ -1,5 +1,7 @@
 package com.likelion14.PBL_Spring.member.service;
 
+import com.likelion14.PBL_Spring.global.exception.DuplicateMemberException;
+import com.likelion14.PBL_Spring.global.exception.MemberNotFoundException;
 import com.likelion14.PBL_Spring.member.domain.Member;
 import com.likelion14.PBL_Spring.member.domain.RoleType;
 import com.likelion14.PBL_Spring.member.dto.LionCreateRequest;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,7 +29,7 @@ public class MemberService {
     @Transactional
     public Member createLion(LionCreateRequest request) {
         if (repository.existsByName(request.getName())) {
-            return null;
+            throw new DuplicateMemberException("이미 존재하는 이름입니다. name: " + request.getName());
         }
 
         Member lion = new Member(request.getName(), request.getMajor(), request.getGeneration(),
@@ -39,7 +42,7 @@ public class MemberService {
     @Transactional
     public Member createStaff(StaffCreateRequest request) {
         if (repository.existsByName(request.getName())) {
-            return null;
+            throw new DuplicateMemberException("이미 존재하는 이름입니다. name: " + request.getName());
         }
 
         Member staff = new Member(request.getName(), request.getMajor(), request.getGeneration(),
@@ -55,20 +58,26 @@ public class MemberService {
 
     // 이름으로 Member 조회
     public Member searchByName(String name) {
-        return repository.findByName(name).orElse(null);
+        return repository.findByName(name)
+                .orElseThrow(() -> new MemberNotFoundException("해당 멤버를 찾을 수 없습니다. name: " + name));
     }
 
     // ID로 Member 조회
     public Member findById(Long id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException("해당 멤버를 찾을 수 없습니다. id: "+ id));
+    }
+
+    // 파트별 Member 목록 조회
+    public List<Member> getMembersByPart(String part) {
+        return repository.findByPart(part);
     }
 
     // Lion 수정
     @Transactional
     public Member updateLion(Long id, LionUpdateRequest request) {
-        Member lion = repository.findById(id).orElse(null);
-        if (lion == null)
-            return null;
+        Member lion = repository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException("해당 멤버를 찾을 수 없습니다. id: "+ id));
 
         lion.updateInfo(request.getMajor(), request.getGeneration(), request.getPart());
         lion.updateStudentId(request.getStudentId());
@@ -78,9 +87,8 @@ public class MemberService {
     // Staff 수정
     @Transactional
     public Member updateStaff(Long id, StaffUpdateRequest request) {
-        Member staff = repository.findById(id).orElse(null);
-        if (staff == null)
-            return null;
+        Member staff = repository.findById(id)
+                        .orElseThrow(() -> new MemberNotFoundException("해당 멤버를 찾을 수 없습니다. id: "+ id));
 
         staff.updateInfo(request.getMajor(), request.getGeneration(), request.getPart());
         staff.updatePosition(request.getPosition());
@@ -89,12 +97,11 @@ public class MemberService {
 
     // Member 삭제
     @Transactional
-    public boolean deleteMember(Long id) {
+    public void deleteMember(Long id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new MemberNotFoundException("해당 멤버를 찾을 수 없습니다. id: "+ id);
         }
 
         repository.deleteById(id);
-        return true;
     }
 }

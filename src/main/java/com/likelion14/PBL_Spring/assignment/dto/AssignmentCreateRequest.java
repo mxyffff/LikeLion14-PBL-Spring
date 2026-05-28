@@ -1,5 +1,8 @@
 package com.likelion14.PBL_Spring.assignment.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 public class AssignmentCreateRequest {
     private String title;
     private String description;
